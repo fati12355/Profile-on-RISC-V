@@ -10,94 +10,59 @@
 gemm_scalar_f32:
 .LFB0:
 	.cfi_startproc
-	addi	sp,sp,-112
-	.cfi_def_cfa_offset 112
-	sd	s0,104(sp)
+	beq	a3,zero,.L18
+	addi	sp,sp,-16
+	.cfi_def_cfa_offset 16
+	slli	t6,a5,2
+	sd	s0,8(sp)
 	.cfi_offset 8, -8
-	addi	s0,sp,112
-	.cfi_def_cfa 8, 0
-	sd	a0,-72(s0)
-	sd	a1,-80(s0)
-	sd	a2,-88(s0)
-	sd	a3,-96(s0)
-	sd	a4,-104(s0)
-	sd	a5,-112(s0)
-	sd	zero,-40(s0)
-	j	.L2
-.L7:
-	sd	zero,-32(s0)
-	j	.L3
-.L6:
-	fmv.s.x	fa5,zero
-	fsw	fa5,-52(s0)
-	sd	zero,-24(s0)
-	j	.L4
-.L5:
-	ld	a4,-40(s0)
-	ld	a5,-112(s0)
-	mul	a4,a4,a5
-	ld	a5,-24(s0)
-	add	a5,a4,a5
-	slli	a5,a5,2
-	ld	a4,-72(s0)
-	add	a5,a4,a5
-	flw	fa5,0(a5)
-	fsw	fa5,-48(s0)
-	ld	a4,-24(s0)
-	ld	a5,-104(s0)
-	mul	a4,a4,a5
-	ld	a5,-32(s0)
-	add	a5,a4,a5
-	slli	a5,a5,2
-	ld	a4,-80(s0)
-	add	a5,a4,a5
-	flw	fa5,0(a5)
-	fsw	fa5,-44(s0)
-	flw	fa4,-48(s0)
-	flw	fa5,-44(s0)
-	fmul.s	fa5,fa4,fa5
-	flw	fa4,-52(s0)
-	fadd.s	fa5,fa4,fa5
-	fsw	fa5,-52(s0)
-	ld	a5,-24(s0)
-	addi	a5,a5,1
-	sd	a5,-24(s0)
-.L4:
-	ld	a4,-24(s0)
-	ld	a5,-112(s0)
-	bltu	a4,a5,.L5
-	ld	a4,-40(s0)
-	ld	a5,-104(s0)
-	mul	a4,a4,a5
-	ld	a5,-32(s0)
-	add	a5,a4,a5
-	slli	a5,a5,2
-	ld	a4,-88(s0)
-	add	a5,a4,a5
-	flw	fa5,-52(s0)
-	fsw	fa5,0(a5)
-	ld	a5,-32(s0)
-	addi	a5,a5,1
-	sd	a5,-32(s0)
+	mv	t0,a3
+	mv	s0,a2
+	mv	t2,a1
+	mv	t1,a4
+	mv	t3,a5
+	mv	a7,a0
+	add	a3,a0,t6
+	slli	a2,a4,2
+	li	t5,0
+	li	t4,0
 .L3:
-	ld	a4,-32(s0)
-	ld	a5,-104(s0)
-	bltu	a4,a5,.L6
-	ld	a5,-40(s0)
-	addi	a5,a5,1
-	sd	a5,-40(s0)
-.L2:
-	ld	a4,-40(s0)
-	ld	a5,-96(s0)
-	bltu	a4,a5,.L7
-	nop
-	nop
-	ld	s0,104(sp)
+	beq	t1,zero,.L5
+	slli	a1,t5,2
+	add	a1,s0,a1
+	mv	a6,t2
+	li	a0,0
+.L7:
+	fmv.s.x	fa5,zero
+	mv	a4,a6
+	mv	a5,a7
+	beq	t3,zero,.L6
+.L4:
+	flw	fa3,0(a5)
+	flw	fa4,0(a4)
+	addi	a5,a5,4
+	add	a4,a4,a2
+	fmadd.s	fa5,fa3,fa4,fa5
+	bne	a5,a3,.L4
+.L6:
+	fsw	fa5,0(a1)
+	addi	a0,a0,1
+	addi	a1,a1,4
+	addi	a6,a6,4
+	bne	t1,a0,.L7
+.L5:
+	addi	t4,t4,1
+	add	t5,t5,t1
+	add	a7,a7,t6
+	add	a3,a3,t6
+	bne	t0,t4,.L3
+	ld	s0,8(sp)
 	.cfi_restore 8
-	.cfi_def_cfa 2, 112
-	addi	sp,sp,112
+	addi	sp,sp,16
 	.cfi_def_cfa_offset 0
 	jr	ra
+.L18:
+	ret
 	.cfi_endproc
 .LFE0:
 	.size	gemm_scalar_f32, .-gemm_scalar_f32
